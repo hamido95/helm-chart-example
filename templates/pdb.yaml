@@ -1,5 +1,5 @@
 {{- if .Values.pdb.create }}
-apiVersion: {{ include "helpers.helpers.policy.apiVersion" . }}
+apiVersion: {{ include "helpers.helpers.pdb.apiVersion" . }}
 kind: PodDisruptionBudget
 metadata:
   name: {{ include "helpers.helpers.fullname" . }}

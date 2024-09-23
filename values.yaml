@@ -6,6 +6,7 @@ global:
   imageRegistry: ""
   imagePullSecrets: []
   storageClass: ""
+  kubeVersion: "1.29.0"
 
 ## Common parameters
 ## nameOverride String to partially override apim.fullname template (will maintain the release name)
@@ -177,20 +178,15 @@ containerSecurityContext:
     drop: ["ALL"]
   seccompProfile:
     type: "RuntimeDefault"
-## Configures the ports NGINX listens on
-## @param containerPorts.http Sets http port inside NGINX container
-## @param containerPorts.https Sets https port inside NGINX container
+## Configures the ports apim listens on
 ##
-containerPorts:
-  http: 8080
-  https: 8443
 ## additional container ports for the apim container
 ## e.g:
-## extraContainerPorts:
+## containerPorts:
 ##   - name: web
 ##     containerPort: 5001
 ##
-extraContainerPorts: []
+containerPorts: []
 
 ## apim containers' resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
@@ -248,7 +244,6 @@ autoscaling:
   minReplicas: ""
   maxReplicas: ""
   targetCPUUtilizationPercentage: ""
-  targetCPUUtilizationPercentage: ""
   targetMemoryUtilizationPercentage: ""
 
 ## Pods Service Account
@@ -292,11 +287,11 @@ service:
   ##
   type: ""
   ports: []
-    port: ""
-    targetPort: "" 
-    protocol: ""
-    name: ""
-    nodePort: ""
+    #port: 
+    #targetPort: "" 
+    #protocol: ""
+    #name: ""
+    #nodePort: ""
   ## apim service Cluster IP
   ## e.g.:
   ## clusterIP: None
@@ -345,16 +340,10 @@ persistence:
   additionalVolumes: []
   # if you need any additional volume mounts, you can define them here
   additionalMounts: []
-  volumeMountPath: ""
+  volumeMountPath: "/config"
 
 rbac:
   create: false
-
-serviceAccount:
-  create: false
-  annotations: ""
-  automount: false
-
 
 server:
   clusterRoleRules:

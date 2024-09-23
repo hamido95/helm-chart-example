@@ -2,7 +2,7 @@
 define the kubernetes version 
 */}}
 {{- define "helpers.helpers.kubeVersion" -}}
-{{- default (default .Capabilities.kubeVersion.Version .Values.kubeVersion) ((.Values.Global).kubeVersion) -}}
+{{- default (default $.Capabilities.KubeVersion.Version .Values.kubeVersion) ($.Values.global.kubeVersion) -}}
 {{- end -}}
 
 {{/*
@@ -23,7 +23,7 @@ Create target apiVersion for service.
 Create target apiVersion for poddisruptionbudget.
 */}}
 {{- define "helpers.helpers.pdb.apiVersion" -}}
-{{- $kubeVersion := include "helpers.helpers.kubeVersion" . -}}
+{{- $kubeVersion := include "helpers.helpers.kubeVersion" $ -}}
 {{- if and (not (empty $kubeVersion)) (semverCompare "<1.21-0" $kubeVersion) -}}
 {{- print "policy/v1beta1" -}}
 {{- else -}}

@@ -1,4 +1,4 @@
-apiVersion: {{ include helpers.helpers.service.apiVersion . }}
+apiVersion: {{ include "helpers.helpers.service.apiVersion" . }}
 kind: Service
 metadata:
   name: {{ include "helpers.helpers.fullname" . }}
