@@ -1,0 +1,21 @@
+{{- if .Values.pdb.create }}
+apiVersion: {{ include "helpers.helpers.policy.apiVersion" . }}
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "helpers.helpers.fullname" . }}
+  namespace: {{ include "helpers.helpers.namespace" . | quote }}
+  labels: {{- include "helpers.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- .Values.commonAnnotations | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.pdb.minAvailable }}
+  minAvailable: {{ .Values.pdb.minAvailable }}
+  {{- end }}
+  {{- if or .Values.pdb.maxUnavailable (not .Values.pdb.minAvailable) }}
+  maxUnavailable: {{ .Values.pdb.maxUnavailable | default 1 }}
+  {{- end }}
+  {{- $podLabels := list .Values.podLabels .Values.commonLabels }}
+  selector:
+    matchLabels: {{- include "helpers.labels.matchLabels" ( dict "customLabels" $podLabels "context" $ ) | nindent 6 }}
+{{- end }}

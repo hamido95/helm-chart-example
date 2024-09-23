@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: whatever
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem # can be set to block also
+  storageClassName: "local-storage"
+  persistentVolumeReclaimPolicy: # Recycle, Delete, Retain
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: /mnt/disks/ssd1
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - example-node
+  claimRef:
+    name: foo-pvc
+    namespace: foo

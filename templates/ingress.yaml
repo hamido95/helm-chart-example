@@ -1,0 +1,40 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: {{ include "helpers.helpers.ingress.apiVersion" . }}
+kind: Ingress
+metadata:
+  name: {{ include "helpers.helpers.fullname" . }}
+  namespace: {{ include "helpers.helpers.namespace" . | quote }}
+  labels: {{- include "helpers.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+  {{- if .Values.ingress.annotations }}
+  annotations: {{- .Values.ingress.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.ingress.ingressClassName | quote }}
+  {{- end }}
+  {{- if .Values.ingress.tls }}
+  tls:
+    {{- range .Values.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.ingress.hostname }}
+    - host: {{ .Values.ingress.hostname | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+            pathType: {{ .pathType }}
+            {{- end }}
+            backend:
+              {{- include "helpers.ingress.backend" (dict "serviceName" (include "helpers.helpers.fullname" .) "servicePort" "http" "context" $)  | nindent 14 }}
+              {{- end }}
+          {{- end }}
+    {{- end }}
+{{- end }}

@@ -1,0 +1,29 @@
+{{- if .Values.rbac.create -}}
+apiVersion: {{ include "helpers.helpers.rbac.apiVersion" . }}
+kind: ClusterRole
+metadata:
+  name: api-k8s-registry-access-{{ include "helpers.helpers.fullname.namespace" . }}
+  labels: {{- include "helpers.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- .Values.commonAnnotations | nindent 4 }}
+  {{- end }}
+rules:
+  {{- if .Values.server.clusterRoleRules }}
+  {{- .Values.server.clusterRoleRules | nindent 2 }}
+  {{ else }}
+  - apiGroups:
+    - ""
+    - apps
+    resources:
+    - configmaps
+    - endpoints
+    - pods
+    - services
+    - namespaces
+    - nodes
+    verbs:
+    - get
+    - watch
+    - list
+  {{- end }}
+{{- end }}

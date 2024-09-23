@@ -1,0 +1,15 @@
+apiVersion: v2
+name: apim
+description: apim helm chart
+type: application
+version: "0.1.0"
+appVersion: "1.16.0"
+kubeVersion: ">=1.19.0-0"
+keywords:
+  - apim
+  - sampv3
+sources:
+  - https://git.vaslapp.com/devops
+maintainers:
+  - name: vasl devops team
+    email: hr.rahnama95@gmail.com

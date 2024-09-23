@@ -1,0 +1,17 @@
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: {{ include "helpers.helpers.pvc.apiVersion" . }}
+metadata:
+  name: {{ include "helpers.helpers.fullname" . }}
+  labels:
+    {{- include "helpers.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+spec:
+  storageClassName: {{ .Values.persistence.storageClass }}
+  accessModes:
+    - {{ .Values.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size | quote }}
+  {{- end }} 
+  volumeName: {{ .Values.persistence.volumeName }}
+  volumeMode: {{ .Values.persistence.volumeMode }}

@@ -1,0 +1,45 @@
+apiVersion: {{ include helpers.helpers.service.apiVersion . }}
+kind: Service
+metadata:
+  name: {{ include "helpers.helpers.fullname" . }}
+  namespace: {{ include "helpers.helpers.namespace" . | quote }}
+  labels: {{- include "helpers.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+  
+  {{- if or .Values.service.annotations .Values.commonAnnotations }}
+  {{- $annotations := dict "values" ( list .Values.service.annotations .Values.commonAnnotations ) }}
+  annotations: {{-  dict "value" $annotations | nindent 4 }}
+  {{- end }}  
+spec:
+{{- if (or (eq .Values.service.type "ClusterIP") (empty .Values.service.type)) }}
+  type: ClusterIP
+  {{- if .Values.service.clusterIP }}
+  clusterIP: {{ .Values.service.clusterIP }}
+  {{- end }}
+  {{- if or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort") }}
+  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy | quote }}
+  {{- end }}
+  {{- if .Values.service.sessionAffinity }}
+  sessionAffinity: {{ .Values.service.sessionAffinity }}
+  {{- end }}
+  {{- if .Values.service.sessionAffinityConfig }}
+  sessionAffinityConfig: {{- .Values.service.sessionAffinityConfig | nindent 4 }}
+  {{- end }}
+  {{- if and (eq .Values.service.type "LoadBalancer") .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges: {{- toYaml .Values.service.loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  {{- if (and (eq .Values.service.type "LoadBalancer") (not (empty .Values.service.loadBalancerIP))) }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- end }}
+  ports:
+    {{- range .Values.service.ports }}
+    - port: {{ .port }}
+      targetPort: {{ .targetPort }}
+      protocol: {{ .protocol }}
+      name: {{ .name }}
+      {{- if or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer") }}
+      nodePort: {{ .nodePort }}
+    {{- end }}
+  selector:
+    {{- include .Values.commonLabels . | nindent 4 }}
+  {{- end }}
+{{- end }}

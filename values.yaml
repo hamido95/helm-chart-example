@@ -1,0 +1,370 @@
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global parameters: imageRegistry, imagePullSecrets and storageClass
+##
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+  storageClass: ""
+
+## Common parameters
+## nameOverride String to partially override apim.fullname template (will maintain the release name)
+##
+nameOverride: ""
+## fullnameOverride String to fully override apim.fullname template
+##
+fullnameOverride: ""
+## namespaceOverride String to fully override helpers.helpers.namespace
+##
+namespaceOverride: ""
+## kubeVersion Force target Kubernetes version (using Helm capabilities if not set)
+##
+kubeVersion: ""
+## clusterDomain Kubernetes Cluster Domain
+##
+clusterDomain: cluster.local
+## commonLabels Add labels to all the deployed resources
+##
+commonLabels: {}
+## commonAnnotations Add annotations to all the deployed resources
+##
+commonAnnotations: {}
+
+## apim image version
+##
+image:
+  registry: ""
+  repository: ""
+  tag: ""
+  pullPolicy: ""
+  PullSecrets: []
+## automountServiceAccountToken Mount Service Account token in pod
+##
+automountServiceAccountToken: false
+## hostAliases Deployment pod host aliases
+## https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
+##
+hostAliases: []
+## Command and args for running the container (set to default if not set).
+##
+command: []
+args: []
+## environment variables to be set on apim containers
+## E.g:
+## configmap:
+##   data:
+##     FOO: BAR
+##
+configmap:
+  data: []
+## EnvVarsSecret Secret with extra environment variables
+##
+envVarsSecret: ""
+
+## apim replicas to deploy
+##
+replicaCount: 1
+## revisionHistoryLimit The number of old history to retain to allow rollback
+##
+revisionHistoryLimit: 10
+## updateStrategy.type apim deployment strategy type
+## updateStrategy.rollingUpdate apim deployment rolling update configuration parameters
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+##
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate: {}
+## Additional labels for apim pods
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+##
+podLabels: {}
+## Annotations for apim pods
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
+## Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+##
+podAffinityPreset: ""
+## Pod anti-affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+##
+podAntiAffinityPreset: ""
+## Node affinity preset
+## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity
+##
+nodeAffinityPreset:
+  ## Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+  ##
+  type: ""
+  ## Node label key to match Ignored if `affinity` is set.
+  ## E.g.
+  ## key: "kubernetes.io/hostname"
+  ##
+  key: ""
+  ## Node label values to match. Ignored if `affinity` is set.
+  ## E.g.
+  ## values:
+  ##   - worker-01
+  ##   - worker-02
+  ##
+  values: []
+## Affinity for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+## Note: podAffinityPreset, podAntiAffinityPreset, and  nodeAffinityPreset will be ignored when it's set
+##
+affinity: {}
+
+## DNS-Pod services
+## Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+dnsPolicy: ""
+## Required if `dnsPolicy` is set to `None`
+## The dnsConfig field is optional and it can work with any dnsPolicy settings.
+## Ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config
+## E.g.
+## dnsConfig:
+##   nameservers:
+##     - 192.0.2.1 # this is an example
+dnsConfig: {}
+## Node labels for pod assignment. Evaluated as a template.
+## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+##
+nodeSelector: {}
+## Tolerations for pod assignment. Evaluated as a template.
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+## apim pods' priorityClassName
+##
+priorityClassName: ""
+## Name of the k8s scheduler (other than default)
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+schedulerName: ""
+## time the given to the apim pod needs to terminate gracefully
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
+##
+terminationGracePeriodSeconds: ""
+
+## apim pods' Security Context.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+##
+podSecurityContext:
+  enabled: true
+  fsGroupChangePolicy: Always
+  supplementalGroups: []
+  fsGroup: 1001
+  ## sysctl settings
+  ## Example:
+  ## sysctls:
+  ## - name: net.core.somaxconn
+  ##   value: "10000"
+  ##
+  sysctls: []
+## apim containers' Security Context.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+##
+containerSecurityContext:
+  enabled: true
+  seLinuxOptions: null
+  runAsUser: 1001
+  runAsGroup: 1001
+  runAsNonRoot: true
+  privileged: false
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
+  seccompProfile:
+    type: "RuntimeDefault"
+## Configures the ports NGINX listens on
+## @param containerPorts.http Sets http port inside NGINX container
+## @param containerPorts.https Sets https port inside NGINX container
+##
+containerPorts:
+  http: 8080
+  https: 8443
+## additional container ports for the apim container
+## e.g:
+## extraContainerPorts:
+##   - name: web
+##     containerPort: 5001
+##
+extraContainerPorts: []
+
+## apim containers' resource requests and limits
+## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+## container requests and limits for different resources like CPU or memory (essential for production workloads)
+## Example:
+## resources:
+##   requests:
+##     cpu: 1
+##     memory: 512Mi
+##   limits:
+##     cpu: 2
+##     memory: 4096Mi
+##
+resources: {}
+## apim containers' lifecycleHooks
+## ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+lifecycleHooks: {}
+## Example:
+## postStart:
+##   exec:
+##     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
+## Example:
+## preStop:
+##   exec:
+##     command: ["/bin/sleep", "20"]
+
+## apim containers' liveness probe.
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+##
+livenessProbe:
+  enabled: true
+  path: /
+  initialDelaySeconds: 5
+  timeoutSeconds: 3
+  periodSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+## apim containers' readiness probe.
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+##
+readinessProbe:
+  enabled: true
+  path: /
+  initialDelaySeconds: 5
+  timeoutSeconds: 3
+  periodSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+
+## Autoscaling parameters
+##
+autoscaling:
+  enabled: false
+  minReplicas: ""
+  maxReplicas: ""
+  targetCPUUtilizationPercentage: ""
+  targetCPUUtilizationPercentage: ""
+  targetMemoryUtilizationPercentage: ""
+
+## Pods Service Account
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+##
+serviceAccount:
+  ## Create ServiceAccount for apim pod
+  ##
+  create: true
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the `helpers.helpers.fullname` template
+  name: ""
+  ## Annotations for service account. Evaluated as a template.
+  ## Only used if `create` is `true`.
+  ##
+  annotations: {}
+  ## Auto-mount the service account token in the pod
+  ##
+  automountServiceAccountToken: false
+
+## Pod Disruption Budget configuration
+## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+##
+pdb:
+  ## Created a PodDisruptionBudget
+  ##
+  create: true
+  ## @param pdb.minAvailable Min number of pods that must still be available after the eviction.
+  ## You can specify an integer or a percentage by setting the value to a string representation of a percentage (eg. "50%"). It will be disabled if set to 0
+  ##
+  minAvailable: ""
+  ## @param pdb.maxUnavailable Max number of pods that can be unavailable after the eviction.
+  ## You can specify an integer or a percentage by setting the value to a string representation of a percentage (eg. "50%"). It will be disabled if set to 0. Defaults to `1` if both `pdb.minAvailable` and `pdb.maxUnavailable` are empty.
+  ##
+  maxUnavailable: ""
+
+## apim Service properties
+##
+service:
+  ## apim Service type. Allowed values: "ClusterIP", "LoadBalancer", "NodePort"
+  ##
+  type: ""
+  ports: []
+    port: ""
+    targetPort: "" 
+    protocol: ""
+    name: ""
+    nodePort: ""
+  ## apim service Cluster IP
+  ## e.g.:
+  ## clusterIP: None
+  ##
+  clusterIP: ""
+  ## LoadBalancer service IP address
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+  ##
+  loadBalancerIP: ""
+  ## apim service Load Balancer sources
+  ## ref: https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+  ## e.g:
+  ## loadBalancerSourceRanges:
+  ##   - 10.10.10.0/24
+  ##
+  loadBalancerSourceRanges: []
+  ## Session Affinity for Kubernetes service, can be "None" or "ClientIP"
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+  ##
+  sessionAffinity: None
+  ## Additional settings for the sessionAffinity
+  ## sessionAffinityConfig:
+  ##   clientIP:
+  ##     timeoutSeconds: 300
+  ##
+  sessionAffinityConfig: {}
+  ## Service annotations
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+  ##
+  annotations: {}
+  ## Enable client source IP preservation
+  ## ref https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  ##
+  externalTrafficPolicy: Cluster
+
+
+persistence:
+  enabled: true
+  storageClass: ""
+  existingClaim: ""
+  volumeName: ""
+  volumeMode: "Filesystem"
+  accessMode: ReadWriteOnce
+  size: 800Mi
+  # if you need any additional volumes, you can define them here
+  additionalVolumes: []
+  # if you need any additional volume mounts, you can define them here
+  additionalMounts: []
+  volumeMountPath: ""
+
+rbac:
+  create: false
+
+serviceAccount:
+  create: false
+  annotations: ""
+  automount: false
+
+
+server:
+  clusterRoleRules:
+
+ingress:
+  enabled:
+  annotations:
+  ingressClassName:
+  hostname:
+  tls:
+    host:
+    secretName:
+
