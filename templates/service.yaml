@@ -4,7 +4,6 @@ metadata:
   name: {{ include "helpers.helpers.fullname" . }}
   namespace: {{ include "helpers.helpers.namespace" . | quote }}
   labels: {{- include "helpers.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
-  
   {{- if or .Values.service.annotations .Values.commonAnnotations }}
   {{- $annotations := dict "values" ( list .Values.service.annotations .Values.commonAnnotations ) }}
   annotations: {{-  dict "value" $annotations | nindent 4 }}
@@ -36,10 +35,10 @@ spec:
       targetPort: {{ .targetPort }}
       protocol: {{ .protocol }}
       name: {{ .name }}
-      {{- if or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer") }}
+      {{- if or (eq $.Values.service.type "NodePort") (eq $.Values.service.type "LoadBalancer") }}
       nodePort: {{ .nodePort }}
+      {{- end }}
     {{- end }}
   selector:
-    {{- include .Values.commonLabels . | nindent 4 }}
-  {{- end }}
+    {{- toYaml .Values.commonLabels | nindent 4 }}
 {{- end }}

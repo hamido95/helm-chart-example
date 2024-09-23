@@ -11,5 +11,10 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "helpers.helpers.fullname" . }}:{{ .Values.service.ports }}']
+      args: 
+      {{- if .Values.service.ports -}}
+      ['{{ include "helpers.helpers.fullname" . }}:{{ index .Values.service.ports 0 "port" }}']
+      {{- else }}
+      ['{{ include "helpers.helpers.fullname" . }}:80']
+      {{- end }}
   restartPolicy: Never

@@ -6,12 +6,12 @@ metadata:
   labels:
     {{- include "helpers.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
 spec:
-  storageClassName: {{ .Values.persistence.storageClass }}
+  storageClassName: {{ .Values.persistence.storageClass | quote }}
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
   resources:
     requests:
       storage: {{ .Values.persistence.size | quote }}
-  {{- end }} 
-  volumeName: {{ .Values.persistence.volumeName }}
-  volumeMode: {{ .Values.persistence.volumeMode }}
+  volumeName: {{ .Values.persistence.volumeName | quote }}
+  volumeMode: {{ .Values.persistence.volumeMode | quote }}
+{{- end }}
